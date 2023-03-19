@@ -17,10 +17,10 @@ services:
   api:
     build:
       dockerfile: Dockerfile.dev
-      context: './server'
+      context: '../new-be-ws'
     volumes:
       - /app/node_modules
-      - ./server:/app 
+      - ../new-be-ws:/app 
     environment:
       - PGUSER=postgres    
       - PGHOST=postgres  
@@ -31,7 +31,7 @@ services:
     stdin_open: true
     build:
       dockerfile: Dockerfile.dev
-      context: ./client
+      context: ../new-fe-ws
     volumes:
       - /app/node_modules
-      - ./client:/app            
+      - ../new-fe-ws:/app            
