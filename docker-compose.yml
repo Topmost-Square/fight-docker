@@ -30,20 +30,26 @@ services:
   api:
     build:
       dockerfile: Dockerfile.dev
-      context: '../new-be-ws'
+      context: '../server'
     volumes:
       - /app/node_modules
-      - ../new-be-ws:/app
+      - ../server:/app
+    environment:
+      - PGUSER=postgres
+      - PGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres
+      - PGPORT=5432
     ports:
     - '4000:4000'
   client:
     stdin_open: true
     build:
       dockerfile: Dockerfile.dev
-      context: '../new-fe-ws'
+      context: ../client
     volumes:
       - /app/node_modules
-      - ../new-fe-ws:/app  
+      - ../client:/app
 
 volumes:
   data:
