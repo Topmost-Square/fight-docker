@@ -1,61 +1,31 @@
 version: '3'
 services:
-  postgres:
-    image: 'postgres:latest'
+  db:
+    image: 'mysql:8.0'
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
     ports: 
-      - "5432:5432"
+      - '3306:3306'
+    expose:
+      - '3306'
     volumes:
-      - data:/var/lib/postgresql/data 
-  pg-admin:
-    image: dpage/pgadmin4:6
-    environment: 
-      - PGADMIN_DEFAULT_EMAIL=admin@mail.com 
-      - PGADMIN_DEFAULT_PASSWORD=admin
-      - PGADMIN_LISTEN_PORT=5050
+      - my-db:/var/lib/mysql
+  redis:
+    image: 'redis:7.0.11'
     ports:
-      - "5050:5050"
-  api:
-    build:
-      dockerfile: Dockerfile.dev
-      context: '../server'
-    container_name: api_server
-    volumes:
-      - /app/node_modules
-      - ../server:/app
+      - '6379'
     environment:
-      - PGUSER=postgres
-      - PGHOST=postgres
-      - PGDATABASE=postgres
-      - PGPASSWORD=postgres
-      - PGPORT=5432
-    ports:
-    - '4000:4000'
-  client:
-    stdin_open: true
-    build:
-      dockerfile: Dockerfile.dev
-      context: ../client
-    container_name: client
+      - REDIS_REPLICATION_MODE=master
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_MASTER_PORT_NUMBER=6379
+      - REDIS_PASSWORD=redis_password
     volumes:
-      - /app/node_modules
-      - ../client:/app
-    ports:
-      - '3000:3000'
-  customer:
-    stdin_open: true
-    build:
-      dockerfile: Dockerfile.dev
-      context: ../customer-client
-    container_name: customer_client
-    volumes:
-      - /app/node_modules
-      - ../customer-client:/app
-    ports:
-      - '3001:3001'
+      - cache:/data
 
 volumes:
-  data:
+  my-db:
+  cache:
           
